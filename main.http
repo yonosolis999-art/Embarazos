@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seguimiento del embarazo</title>
+<style>
+:root{--bg:#f7f8f5;--card:#fff;--tx:#1d2a22;--mu:#66756b;--bd:#dde3dc;--ac:#3f7d3a;--m:#3f7d3a;--t:#2f6fb0;--x:#c2762b;--a:#b0447a;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a16;--card:#1e2721;--tx:#e8efe9;--mu:#9fb0a4;--bd:#33413a;--ac:#7bc275;--m:#7bc275;--t:#6fa8e0;--x:#e6a05c;--a:#e07fb0}}
+:root[data-theme="dark"]{--bg:#141a16;--card:#1e2721;--tx:#e8efe9;--mu:#9fb0a4;--bd:#33413a;--ac:#7bc275;--m:#7bc275;--t:#6fa8e0;--x:#e6a05c;--a:#e07fb0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 2px}h2{font-size:16px;margin:22px 0 8px}
+.sub{color:var(--mu);font-size:13px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+label{font-weight:600;display:block;margin-bottom:6px}
+input[type=date]{font:inherit;padding:9px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);width:100%;max-width:220px}
+.kpis{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.kpi{flex:1 1 90px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px 10px}
+.kpi b{display:block;font-size:17px}.kpi span{font-size:12px;color:var(--mu)}
+.bar{height:8px;background:var(--bd);border-radius:6px;margin-top:12px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-bottom:8px}
+.legend s{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(8,1fr)}}
+.w{border:1px solid var(--bd);background:var(--card);border-radius:8px;padding:5px 4px;text-align:center;font-size:11px;color:var(--mu);cursor:pointer;min-height:58px;font-family:inherit}
+.w b{display:block;font-size:14px;color:var(--tx)}
+.w .d{display:flex;gap:3px;justify-content:center;margin-top:3px;min-height:8px}.w .d i{width:8px;height:8px;border-radius:50%}
+.w.now{outline:2px solid var(--ac)}.w.past{opacity:.55}.w.sel{background:var(--bg);border-color:var(--ac)}
+.tm{margin-top:10px;font-size:12px;color:var(--mu)}
+.v{border-left:5px solid var(--bd);margin-bottom:10px}
+.v h3{margin:0;font-size:15px}.v .r{font-size:12px;font-weight:600}.v p{margin:6px 0 0;font-size:13px}
+.v .dt{font-size:13px;color:var(--mu)}.v .ci{margin-top:6px;font-size:13px;background:var(--bg);border-radius:8px;padding:6px 8px}
+.v.next{box-shadow:0 0 0 2px var(--ac)}.v.done{opacity:.55}
+.tag{display:inline-block;font-size:11px;background:var(--ac);color:#fff;border-radius:10px;padding:1px 8px;margin-left:6px}
+#empty{color:var(--mu);text-align:center;padding:24px 0}
+details{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+summary{font-weight:700;cursor:pointer}details h4{margin:12px 0 4px;font-size:14px;color:var(--ac)}details ul{margin:4px 0;padding-left:18px;font-size:13px}
+.pb{float:right;font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+@media print{.pb,.no{display:none}body{background:#fff;color:#000;font-size:12px}.card,details,.w{break-inside:avoid;border-color:#999}.w.past{opacity:1}.grid{grid-template-columns:repeat(8,1fr)}}
+</style></head><body><main>
+<button class="pb" onclick="window.print()">🖨 Imprimir</button><h1>🤰 Seguimiento del embarazo</h1>
+<div class="sub">Guía rápida seguimiento E.P.P. — DHCCC (sept. 2024)</div>
+<div class="card"><label for="fum">Fecha de la última regla (FUR)</label><input type="date" id="fum">
+<div id="kp"></div></div>
+<div id="out"></div>
+<script>
+const E=[
+{k:'x',n:'Captación precoz / Diagnóstico',who:'Matrona',a:4,b:8,t:'Confirmar embarazo (test), valorar IVE, abrir proceso en Diraya. Quimioprofilaxis: ác. fólico 400 + yodo 200 + B12 (5 mg si diabetes con insulina, IMC>40, cirugía bariátrica, DTN previos, epilepsia, etc.; gemelares 1 mg).',c:'Citar visita PCP de matrona.'},
+{n:'1ª visita (consulta matrona/MAP)',k:'m',who:'Matrona/MAP',a:8,b:10,t:'Diraya: 1ª visita embarazo + abrir SIPACAC. Citar eco HVD 1ª visita. Pedir análisis (perfil 8-12 s). Añadir según riesgo: O\'Sullivan precoz, Trypanosoma cruzi, Zika, VHC.',c:'Citar extracción de analítica a las 10 s.'},
+{n:'Analítica 1er trimestre',k:'a',who:'Extracción',a:10,b:10.86,t:'Hemograma (anemia Hb<11), glucemia, tiroides, serología (VIH, VHB…). Según riesgo: O\'Sullivan precoz, Trypanosoma cruzi, Zika, VHC.',c:'Resultados en la siguiente visita: 1ª visita de recogida de analítica (médico/matrona, sem 10-12).'},
+{n:'1ª visita – recogida de analítica',k:'m',who:'Médico/Matrona',a:10,b:12,t:'Abrir H. seguimiento Diraya. Valorar: anemia (Hb<11), diabetes, tiroides, serología (VIH + derivar infecciosos, VHB + derivar digestivo). O\'Sullivan ≥140 → solicitar SOG.',c:'Citar 2ª visita con tocólogo.'},
+{n:'2ª visita',k:'t',who:'Tocólogo',a:12,b:17.86,t:'Ideal a las 12-14 sem, hasta 17+6.',c:'Citar 3ª visita (matrona) a las 16-18 s.'},
+{n:'3ª visita',k:'m',who:'Matrona',a:16,b:18,t:'Evolución (peso, TA, altura uterina, FCF, hábitos tóxicos), riesgo obstétrico, entregar cribado cromosómico (SIPACAC), revisar FPP por eco. Pedir factor Rh fetal (Rh−) y perfil 2º trimestre: Coombs (Rh−), TSH si procede, urocultivo.',c:'Indicar fecha de análisis (26-27 s). Citar 5ª visita (24-25 s) y 6ª (28 s).'},
+{n:'4ª visita',k:'t',who:'Tocólogo',a:20,b:22.86,t:'Visita de tocólogo (20-22+6).',c:''},
+{n:'5ª visita',k:'m',who:'Médico/Matrona',a:24,b:28,t:'Evolución. Informar vacuna tosferina y consejo antitabaco. Explorar peso, TA, AU, FCF. Analítica Coombs indirecto si procede. Diabetes gestacional → iniciar protocolo. Anemia si Hb<10,5. Si Rh(−) y Coombs(−): receta gamma anti D 750 UI/ml.',c:'Citar resultados matrona/MAP (27-28 s). Citar matrona/enfermería para administrar gamma anti D a las 28-30 s. Citar educación maternal.'},
+{n:'Analítica 2º trimestre',k:'a',who:'Extracción',a:26,b:27.86,t:'Perfil 2º trimestre (O\'Sullivan/SOG, Coombs, TSH, urocultivo).',c:'Resultados en la siguiente visita: 6ª visita (matrona, sem 28).'},
+{n:'6ª visita',k:'m',who:'Matrona',a:28,b:32,t:'Vacunación tosferina / gamma anti D. Consejo antitabaco. Explorar peso, TA, AU, FCF. Ver analítica. Solicitar analítica 3er trimestre + urocultivo + TSH si procede.',c:'Indicar fecha de extracción a las 36-37 s. Citar matrona/enfermería para extracción (8ª visita) y resultados matrona/MAP.'},
+{n:'Analítica 3er trimestre',k:'a',who:'Extracción',a:37,b:37.86,t:'Analítica 3T + exudado vaginal (EGB). Pedida en la 6ª visita.',c:'Resultados en la siguiente visita: 9ª visita (médica/matrona, sem 38).'},
+{n:'7ª visita',k:'t',who:'Tocólogo',a:32,b:34,t:'Visita de tocólogo (32-34 sem).',c:''},
+{n:'8ª visita',k:'m',who:'Matrona/MAP',a:36,b:37,t:'Movimientos fetales, contracciones, edemas. Explorar peso, TA, AU, FCF. Exudado vaginal / analítica 3T. Explicar signos de alarma.',c:''},
+{n:'9ª visita',k:'x',who:'Médica/Matrona',a:38,b:38.86,t:'Ver analítica 3T. Si EGB positivo: tratamiento intraparto. Anemia <11. Valorar edemas, TA, AU, FCF.',c:''},
+{n:'10ª visita',k:'t',who:'Tocólogo',a:39,b:39.86,t:'Visita de tocólogo (39 sem).',c:''},
+{n:'11ª visita – HJRJ',k:'t',who:'Hospital HJRJ',a:40,b:41.86,t:'Control 40-41 sem.',c:''}];
+const C={m:'var(--m)',t:'var(--t)',x:'var(--x)',a:'var(--a)'};
+const $=id=>document.getElementById(id),D=86400000;
+const f=d=>d.toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+const fy=d=>d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+let L,sel=null;
+try{const s=localStorage.getItem('fur');if(s)$('fum').value=s}catch(e){}
+$('fum').addEventListener('change',()=>{try{localStorage.setItem('fur',$('fum').value)}catch(e){}sel=null;go()});
+const P=`<h2>Protocolos</h2>
+<details><summary>Diabetes gestacional (*)</summary>
+<h4>O'Sullivan</h4><ul><li>≥140: solicitar SOG (dieta 3 días previos, botón rojo)</li><li>≥200: diagnóstico de diabetes gestacional</li></ul>
+<h4>Curva SOG 100 g (normal)</h4><ul><li>Basal &lt;105 · 1ª h &lt;190 · 2ª h &lt;165 · 3ª h &lt;145</li><li>2 valores alterados: diabetes gestacional</li><li>1 valor alterado: nueva cita SOG 100 g en 3 semanas; si de nuevo 1 valor alterado: diagnóstico de intolerancia</li><li>Recomendar dieta saludable y ejercicio</li></ul>
+<h4>Diabetes gestacional</h4><ul><li>Entregar dieta de 2000 kcal, glucómetro y recetas de tiras reactivas</li><li>BMTEST de 6 puntos, días alternos</li><li>Objetivo: basal y preprandial &lt;95 mg/dl; postprandial 1 h &lt;140, 2 h &lt;120</li><li>Entregar hojas de registro</li><li>Derivar a Consulta de Embarazo de riesgo, Hospital Vázquez Díaz, en 15 días</li></ul></details>
+<details><summary>Tiroides (**)</summary>
+<h4>Hipotiroidismo previo a la gestación</h4><ul><li>Aumentar dosis de Lt4 un 25% desde el primer momento</li><li>Posparto: volver a la dosis pregestacional, control en 6 semanas</li></ul>
+<h4>Hipotiroidismo gestacional</h4><ul><li>Subclínico (T4L &gt;0,94) / clínico (T4L &lt;0,94)</li><li>TSH &gt;4,6 (T1) o &gt;4,8 (T2/T3): tratar siempre, independientemente de Ac anti-TPO y T4L</li><li>Objetivo: TSH &lt;2,5 (T1) y &lt;3 (T2/T3)</li></ul>
+<h4>Hipotiroxinemia</h4><ul><li>TSH &lt;4,6 (T1) o &lt;4,8 (T2/T3) + T4L &lt;0,94: no tratar (TSH normal); control en 6 semanas</li></ul>
+<h4>Hipertiroidismo</h4><ul><li>Pregestacional: derivar a consulta rápida de endocrino HJRJ por cita web</li><li>Gestacional subclínico: TSH baja y T4L normal en el 1er trimestre → continuar yodo; si persiste desde las 14 sem sin exoftalmo ni bocio, continuar yodo y analítica en 2 trimestres; posible teleconsulta con endocrino</li><li>Gestacional clínico (TSH disminuida con T3 y T4 elevadas): derivar a consulta rápida de endocrino HJRJ por cita web</li></ul></details>`;
+function go(){
+ const v=$('fum').value;if(!v){$('kp').innerHTML='';$('out').innerHTML='<div id="empty">Introduce la fecha de la última regla para ver el calendario.</div>';return}
+ L=new Date(v+'T12:00:00');const today=new Date();today.setHours(12,0,0,0);
+ const days=Math.round((today-L)/D),cw=Math.floor(days/7),cd=days%7,fpp=new Date(+L+280*D);
+ const dt=x=>new Date(+L+Math.round(x*7)*D);
+ $('kp').innerHTML=`<div class="kpis"><div class="kpi"><b>${days<0?'—':cw+'+'+cd}</b><span>Semanas actuales</span></div><div class="kpi"><b>${fy(fpp)}</b><span>FPP (40 sem)</span></div><div class="kpi"><b>${Math.max(0,Math.ceil((fpp-today)/D))}</b><span>Días para la FPP</span></div></div><div class="bar"><i style="width:${Math.min(100,Math.max(0,days/2.8))}%"></i></div>`;
+ let h='<h2>Calendario de 40 semanas</h2><div class="legend"><span><s style="background:var(--m)"></s>Matrona/Médico</span><span><s style="background:var(--t)"></s>Tocólogo/HJRJ</span><span><s style="background:var(--x)"></s>Captación/9ª</span><span><s style="background:var(--a)"></s>Analítica</span></div><div class="grid">';
+ for(let w=1;w<=40;w++){const s=dt(w),e=new Date(+s+6*D);
+  const ev=E.filter(x=>x.a<w+1&&x.b>=w&&!(x.b<=w&&x.b%1===0&&x.a<x.b&&x.b===w&&x.b!==x.a));
+  h+=`<button class="w ${w===cw&&days>=0?'now':''} ${w<cw?'past':''} ${sel===w?'sel':''}" onclick="pick(${w})"><b>${w}</b>${f(s)}<div class="d">${ev.map(x=>`<i style="background:${C[x.k]}"></i>`).join('')}</div></button>`}
+ h+='</div><div class="tm" id="tm">Toca una semana para ver qué toca.</div><h2>Visitas y cuándo citar</h2>';
+ let nx=E.findIndex(x=>dt(x.b)>=today);
+ E.forEach((x,i)=>{const s=dt(x.a),e=dt(x.b);
+  h+=`<div class="card v ${i===nx?'next':''} ${e<today?'done':''}" style="border-left-color:${C[x.k]}"><h3>${x.n}${i===nx?'<span class="tag">próxima</span>':''}</h3><div class="r" style="color:${C[x.k]}">${x.who} · sem ${x.a}–${Math.floor(x.b)}${x.b%1?'+6':''}</div><div class="dt">${f(s)} → ${f(e)}</div><p>${x.t}</p>${x.c?`<div class="ci">📌 <b>Citar:</b> ${x.c}</div>`:''}</div>`});
+ $('out').innerHTML=h+P;if(sel)pick(sel,1)}
+function pick(w,k){sel=w;if(!k){go();}const s=new Date(+L+7*w*D),e=new Date(+s+6*D);
+ const ev=E.filter(x=>x.a<w+1&&x.b>=w);
+ $('tm').innerHTML=`<b>Semana ${w}</b> (${f(s)} – ${f(e)}): `+(ev.length?ev.map(x=>x.n+' ('+x.who+')').join('; '):'sin visitas programadas.');
+ document.querySelectorAll('.w').forEach((b,i)=>b.classList.toggle('sel',i+1===w))}
+window.addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+go();
+</script></main></body></html>
